@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const App = () => {
   /** case1 */
@@ -28,11 +29,13 @@ const App = () => {
     const box = new THREE.Mesh(geometry, material);
     scene.add(box);
 
+    new OrbitControls(camera, renderer.domElement);
+
     tick();
 
     // 毎フレーム時に実行されるループイベント
     function tick() {
-      box.rotation.y += 0.01;
+      // box.rotation.y += 0.01;
       renderer.render(scene, camera); // レンダリング
 
       requestAnimationFrame(tick);
@@ -216,10 +219,10 @@ const App = () => {
   // canvasが表示される前だから？
   useEffect(() => {
     createBox();
-    createBox2();
-    createBox3();
-    createBox4();
-    createBox5();
+    // createBox2();
+    // createBox3();
+    // createBox4();
+    // createBox5();
     // createBox5()を呼び出すと第二引数でエラーが起きるため、react-hooks/exhaustive-deps を disable にしておく
     // 理由は後で調べる
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -229,14 +232,14 @@ const App = () => {
       <h2>入門編 - sample1</h2>
       <h3>case1</h3>
       <canvas id="nyumon-sample1" />
-      <h3>case2 - ローテーションz軸方向追加</h3>
+      {/* <h3>case2 - ローテーションz軸方向追加</h3>
       <canvas id="nyumon-sample2" />
       <h3>case3 - ローテーション速度up</h3>
       <canvas id="nyumon-sample3" />
       <h3>case4 - さらにローテーション速度up</h3>
       <canvas id="nyumon-sample4" />
       <h3>case5 - 箱増殖(200個)</h3>
-      <canvas id="nyumon-sample5" />
+      <canvas id="nyumon-sample5" /> */}
     </>
   );
 };
