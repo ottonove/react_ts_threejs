@@ -8,8 +8,8 @@ const App = () => {
   /** case1 */
   const createBox = () => {
     // サイズを指定
-    const width = 960;
-    const height = 540;
+    const width = 400;
+    const height = 400;
 
     // レンダラを作成
     const renderer: any = new THREE.WebGLRenderer({
@@ -26,24 +26,25 @@ const App = () => {
     camera.position.set(0, 0, +1000);
 
     // 箱を作成
-    const geometry = new THREE.BoxGeometry(400, 400, 400);
+    const geometry = new THREE.BoxGeometry(300, 300, 300);
     const material = new THREE.MeshNormalMaterial();
     const box = new THREE.Mesh(geometry, material);
     scene.add(box);
 
-    new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
     renderer.xr.enabled = true;
     document.body.appendChild( VRButton.createButton( renderer ) );
 
-    tick();
+    renderer.setAnimationLoop(tick);
+    // tick();
 
     // 毎フレーム時に実行されるループイベント
     function tick() {
       // box.rotation.y += 0.01;
+      controls.update();
       renderer.render(scene, camera); // レンダリング
-
-      requestAnimationFrame(tick);
+      // requestAnimationFrame(tick);
     }
   };
 
