@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {VRButton} from 'three/examples/jsm/webxr/VRButton.js';
-
+import { useFrame } from "react-three-fiber";
 
 const App = () => {
   /** case1 */
@@ -36,7 +36,10 @@ const App = () => {
     renderer.xr.enabled = true;
     document.body.appendChild( VRButton.createButton( renderer ) );
 
-    renderer.setAnimationLoop(tick);
+    useFrame(() => {
+      renderer.render(scene, camera);
+    });
+    // renderer.setAnimationLoop(tick);
     // tick();
 
     // 毎フレーム時に実行されるループイベント
