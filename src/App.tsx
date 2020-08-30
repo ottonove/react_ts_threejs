@@ -3,8 +3,21 @@ import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {VRButton} from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { Group } from "three";
 
+export type XRHandedness = "none" | "left" | "right";
 
+export type XRTargetRayMode = "gaze" | "tracked-pointer" | "screen";
+
+export type XRSpace = EventTarget;
+export interface XRInputSource {
+  readonly handedness: XRHandedness;
+  readonly targetRayMode: XRTargetRayMode;
+  readonly gamepad?: Gamepad;
+  readonly targetRaySpace: XRSpace;
+  readonly gripSpace?: XRSpace;
+  readonly profiles: string;
+}
 
 const App = () => {
   /** case1 */
@@ -39,16 +52,19 @@ const App = () => {
 
     new OrbitControls(camera, renderer.domElement);
 
-    function onSelectStart(this:any) {
+    function onSelectStart(this:Group) {
       this.userData.isSelecting = true;
-
+      console.log('SelectStart', this.userData.isSelecting);
     }
 
-    function onSelectEnd(this:any) {
+    function onSelectEnd(this:Group) {
       this.userData.isSelecting = false;
+      console.log('SelectEnd', this.userData.isSelecting);
     }
 
-    const buildController = function ( data:any ) {
+    const buildController = function ( data:XRInputSource ) {
+
+      console.log('buildController', data);
 
       switch ( data.targetRayMode ) {
 
