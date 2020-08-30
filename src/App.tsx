@@ -22,11 +22,15 @@ const App = () => {
     const scene = new THREE.Scene();
 
     // カメラを作成
-    const camera = new THREE.PerspectiveCamera(45, width / height);
-    camera.position.set(0, 0, +1000);
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
+    camera.position.set(0, 1.60, 0);
+
+    // const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    // directionalLight.position.set( -1, 2, 4 );
+    // scene.add( directionalLight );
 
     // 箱を作成
-    const geometry = new THREE.BoxGeometry(400, 400, 400);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshNormalMaterial();
     const box = new THREE.Mesh(geometry, material);
     scene.add(box);
@@ -36,15 +40,21 @@ const App = () => {
     renderer.xr.enabled = true;
     document.body.appendChild( VRButton.createButton( renderer ) );
 
-    tick();
+    const render = () => {
+      renderer.render( scene, camera );
+      //console.log('render');
+    }
+    renderer.setAnimationLoop( render );
+
+    // tick();
 
     // 毎フレーム時に実行されるループイベント
-    function tick() {
+    /* function tick() {
       // box.rotation.y += 0.01;
       renderer.render(scene, camera); // レンダリング
 
       requestAnimationFrame(tick);
-    }
+    } */
   };
 
   /** case2 */
