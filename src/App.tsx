@@ -39,37 +39,34 @@ const App = () => {
 
     new OrbitControls(camera, renderer.domElement);
 
-    function onSelectStart() {
-
+    function onSelectStart(this:any) {
       this.userData.isSelecting = true;
 
     }
 
-    function onSelectEnd() {
-
+    function onSelectEnd(this:any) {
       this.userData.isSelecting = false;
-
     }
 
     const buildController = function ( data:any ) {
 
       switch ( data.targetRayMode ) {
 
-        case 'tracked-pointer':
+        case 'tracked-pointer': {
 
-          var geometry = new THREE.BufferGeometry();
+          const geometry = new THREE.BufferGeometry();
           geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
           geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
 
-          var material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
+          const material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
 
           return new THREE.Line( geometry, material );
+        }
+        case 'gaze':
 
-        /* case 'gaze':
-
-          var geometry = new THREE.RingBufferGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
-          var material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
-          return new THREE.Mesh( geometry, material ); */
+          const geometry = new THREE.RingBufferGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
+          const material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
+          return new THREE.Mesh( geometry, material );
 
       }
 
@@ -79,15 +76,10 @@ const App = () => {
     controller1.addEventListener( 'selectstart', onSelectStart );
     controller1.addEventListener( 'selectend', onSelectEnd );
     controller1.addEventListener( 'connected', function ( event:any ) {
-
       controller1.add(buildController( event.data ))
-      //  .add( buildController( event.data ) );
-
     } );
     controller1.addEventListener( 'disconnected', function () {
-
       controller1.remove( controller1.children[ 0 ] );
-
     } );
     scene.add( controller1 );
     const controllerModelFactory = new XRControllerModelFactory();
