@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {VRButton} from 'three/examples/jsm/webxr/VRButton.js';
+import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+
 
 
 const App = () => {
@@ -37,6 +39,63 @@ const App = () => {
 
     new OrbitControls(camera, renderer.domElement);
 
+    function onSelectStart() {
+
+      this.userData.isSelecting = true;
+
+    }
+
+    function onSelectEnd() {
+
+      this.userData.isSelecting = false;
+
+    }
+
+    const buildController = function ( data:any ) {
+
+      switch ( data.targetRayMode ) {
+
+        case 'tracked-pointer':
+
+          var geometry = new THREE.BufferGeometry();
+          geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
+          geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
+
+          var material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
+
+          return new THREE.Line( geometry, material );
+
+        /* case 'gaze':
+
+          var geometry = new THREE.RingBufferGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
+          var material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
+          return new THREE.Mesh( geometry, material ); */
+
+      }
+
+    }
+    const controller1 = renderer.xr.getController( 0 );
+    console.log(controller1);
+    controller1.addEventListener( 'selectstart', onSelectStart );
+    controller1.addEventListener( 'selectend', onSelectEnd );
+    controller1.addEventListener( 'connected', function ( event:any ) {
+
+      controller1.add(buildController( event.data ))
+      //  .add( buildController( event.data ) );
+
+    } );
+    controller1.addEventListener( 'disconnected', function () {
+
+      controller1.remove( controller1.children[ 0 ] );
+
+    } );
+    scene.add( controller1 );
+    const controllerModelFactory = new XRControllerModelFactory();
+
+    const controllerGrip1 = renderer.xr.getControllerGrip( 0 );
+    controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
+    scene.add( controllerGrip1 );
+        
     renderer.xr.enabled = true;
     document.body.appendChild( VRButton.createButton( renderer ) );
 
